@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import requests as r
+import random
 
 token = "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6NDg2NjI2MTEsIm9yZ0lkIjo0MzkyLCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTYyNjQ3NDIzMzQiLCJuYW1lIjoiU2F1bWF5IEx1bmF3YXQiLCJlbWFpbCI6Im1haWxAc2F1bWF5LmRldiIsImlzSW50ZXJuYXRpb25hbCI6MCwiZGVmYXVsdExhbmd1YWdlIjoiZW4iLCJjb3VudHJ5Q29kZSI6IklOIiwiY291bnRyeUlTTyI6IjkxIiwidGltZXpvbmUiOiJHTVQrNTozMCIsImlzRGl5IjpmYWxzZSwiaWF0IjoxNjU3NjUyOTM3LCJleHAiOjE2NTgyNTc3Mzd9.oV_DGDxaHZ5rQZWdNUDv-unLqUu3tuGOehbsYyjVk_XOM-7klOuAVb2S9wbsozza"
 
@@ -38,9 +39,20 @@ def live_class(batchid):
     videos = res['list']
     return total_videos, videos
 
+@app.route("/")
+def hello_world():
+    return "<p>sup!</p>"
+
 @app.route('/videos')
 def videos():
     bid = str(request.args.get('batchid'))
     total_videos, videos = live_class(bid)
     return render_template('videos.html', total_videos=total_videos, videos=videos[::-1])
     # return render_template('videos.html')
+
+
+if __name__ == "__main__": 
+	app.run(
+		host='0.0.0.0', 
+		port=random.randint(2000, 9000) 
+	)
