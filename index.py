@@ -41,7 +41,7 @@ def live_class(batchid):
 
 @app.route("/")
 def hello_world():
-    return "<p>sup!</p>"
+    return "<p>sup!🫦 🫦</p>"
 
 @app.route('/videos')
 def videos():
