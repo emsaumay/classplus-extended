@@ -1,15 +1,11 @@
 {
+    "name": "RIP-CLASSPLUS",
     "version": 2,
-    "builds": [
-        {
-            "src": "./main.py",
-            "use": "@vercel/python"
-        }
-    ],
+    "builds": [{
+        "src": "*py",
+        "use": "@liudonghua123/now-flask"
+    }],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/"
-        }
+        { "src": "(.*)", "dest": "main.py" }
     ]
 }
