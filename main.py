@@ -49,10 +49,7 @@ def videos():
     total_videos, videos = live_class(bid)
     return render_template('videos.html', total_videos=total_videos, videos=videos[::-1])
     # return render_template('videos.html')
-
-
-if __name__ == "__main__": 
-	app.run(
-		host='0.0.0.0', 
-		port=random.randint(2000, 9000) 
-	)
+    
+if __name__ == "__main__":
+    #app.debug = True
+    app.run(host="0.0.0.0",port= 5000)
