@@ -3,27 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Videos</title>
+    <title>Batches</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   </head>
   <body>
     <div class="container">
 
         <div class="row row-cols-1 row-cols-md-5 g-4">
-            {% for v in videos %}
+            {% for v in names %}
             <div class="col">
             <div class="card h-100">
                 <div class="card-header">
-                    {{ v['createdAt'] }}
+                    {{ v['subjectName'] }}
                 </div>
-                <img src="{{ v['thumbnailUrl'] }}" class="card-img-top" alt="...">
                 <div class="card-body">
-                <h5 class="card-title"> {{ v['name'] }}</h5>
+                <h5 class="card-title"> {{ v['batchName'] }}</h5>
                 </div>
                 <div class="card-footer">
-                <small class="text-muted">Duration: {{ v['duration'] }} </small>
+                <small class="text-muted">Created: {{ v['createdDate'] }} </small>
                 </div>
-                <a href="https://vod.saumay.dev/player/#{{v['url']}}" target="_blank" class="btn btn-primary">Watch</a>
+                <a href="https://zeal.saumay.dev/videos?batchid={{v['batchId']}}&token={{token}}" target="_blank" class="btn btn-primary">Videos</a>
             </div>
             </div>
             {% endfor %}
