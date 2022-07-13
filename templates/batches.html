@@ -18,11 +18,11 @@
                 </div>
                 <div class="card-body">
                 <h5 class="card-title"> {{ v['batchName'] }}</h5>
-                </div>
+              </div>
+              <a href="https://zeal.saumay.dev/videos?batchid={{v['batchId']}}&token={{token}}" target="_blank" class="btn btn-primary">Videos</a>
                 <div class="card-footer">
                 <small class="text-muted">Created: {{ v['createdDate'] }} </small>
                 </div>
-                <a href="https://zeal.saumay.dev/videos?batchid={{v['batchId']}}&token={{token}}" target="_blank" class="btn btn-primary">Videos</a>
             </div>
             </div>
             {% endfor %}

@@ -20,10 +20,10 @@
                 <div class="card-body">
                 <h5 class="card-title"> {{ v['name'] }}</h5>
                 </div>
+                <a href="https://vod.saumay.dev/player/#{{v['url']}}" target="_blank" class="btn btn-primary">Watch</a>
                 <div class="card-footer">
                 <small class="text-muted">Duration: {{ v['duration'] }} </small>
                 </div>
-                <a href="https://vod.saumay.dev/player/#{{v['url']}}" target="_blank" class="btn btn-primary">Watch</a>
             </div>
             </div>
             {% endfor %}

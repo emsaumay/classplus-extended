@@ -83,7 +83,6 @@ def videos():
     token = str(request.args.get('token'))
     total_videos, videos = live_class(bid, token)
     return render_template('videos.html', total_videos=total_videos, videos=videos[::-1])
-    # return render_template('videos.html')
 
 @app.route('/batches')
 def batches():
