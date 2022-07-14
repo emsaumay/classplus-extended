@@ -136,7 +136,7 @@ def get_folder(id, token):
         'folderId': id,
     }
 
-    res = r.post('https://api.classplusapp.com/v2/folder/2289003', headers=headers, json=json_data).json()['data']
+    res = r.post(f'https://api.classplusapp.com/v2/folder/{id}', headers=headers, json=json_data).json()['data']
     folders = res['folders']
     atts = res['attachments']
     return folders, atts
