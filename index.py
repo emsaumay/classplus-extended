@@ -72,6 +72,74 @@ def get_batches(token):
 
     return total_batches, names
 
+def get_maerial(token):
+
+    headers = {
+        'authority': 'api.classplusapp.com',
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        'api-version': '23',
+        'content-type': 'application/json;charset=UTF-8',
+        'origin': 'https://web.classplusapp.com',
+        'referer': 'https://web.classplusapp.com/',
+        'region': 'IN',
+        'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        'x-access-token': token,
+    }
+
+    json_data = {
+        'batchFreeResource': 1,
+        'batchId': '304146',
+        'limit': 30,
+        'offset': 0,
+        'sortBy': 'createdAt',
+    }
+
+    res = r.post('https://api.classplusapp.com/v2/folder', headers=headers, json=json_data).json()['data']
+    folders = res['folders']
+    atts = res['attachments']
+    return folders, atts
+
+def get_folder(id, token):
+
+    headers = {
+        'authority': 'api.classplusapp.com',
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        'api-version': '23',
+        'content-type': 'application/json;charset=UTF-8',
+        'origin': 'https://web.classplusapp.com',
+        'referer': 'https://web.classplusapp.com/',
+        'region': 'IN',
+        'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        'x-access-token': token,
+    }
+
+    json_data = {
+        'batchFreeResource': 1,
+        'batchId': '304146',
+        'limit': 30,
+        'offset': 0,
+        'sortBy': 'createdAt',
+        'folderId': id,
+    }
+
+    res = r.post('https://api.classplusapp.com/v2/folder/2289003', headers=headers, json=json_data).json()['data']
+    folders = res['folders']
+    atts = res['attachments']
+    return folders, atts
 
 @app.route("/")
 def hello_world():
@@ -89,6 +157,19 @@ def batches():
     token = str(request.args.get('token'))
     total_batches, names = get_batches(token)
     return render_template('batches.html', total_batches=total_batches, names=names, token=token)
+
+@app.route('/material')
+def material():
+    token = str(request.args.get('token'))
+    folders, atts = get_maerial(token)
+    return render_template('material.html', folders=folders, atts=atts, token=token)
+
+@app.route('/folder')
+def folder():
+    id = str(request.args.get('folderid'))
+    token = str(request.args.get('token'))
+    folders, atts = get_folder(id, token)
+    return render_template('material.html', folders=folders, atts=atts, token=token)
 
 if __name__ == "__main__":
     #app.debug = True
