@@ -1,14 +1,40 @@
-from flask import Flask, render_template, request
+from email import header
+from flask import Flask, redirect, render_template, request
 import requests as r
 import random
 
-# token = "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6NDg2NjI2MTEsIm9yZ0lkIjo0MzkyLCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTYyNjQ3NDIzMzQiLCJuYW1lIjoiU2F1bWF5IEx1bmF3YXQiLCJlbWFpbCI6Im1haWxAc2F1bWF5LmRldiIsImlzSW50ZXJuYXRpb25hbCI6MCwiZGVmYXVsdExhbmd1YWdlIjoiZW4iLCJjb3VudHJ5Q29kZSI6IklOIiwiY291bnRyeUlTTyI6IjkxIiwidGltZXpvbmUiOiJHTVQrNTozMCIsImlzRGl5IjpmYWxzZSwiaWF0IjoxNjU3NjUyOTM3LCJleHAiOjE2NTgyNTc3Mzd9.oV_DGDxaHZ5rQZWdNUDv-unLqUu3tuGOehbsYyjVk_XOM-7klOuAVb2S9wbsozza"
 
 app = Flask(
     __name__,
     template_folder='templates',
     )
 
+def sign(url, token):
+    headers = {
+    'authority': 'api.classplusapp.com',
+    'accept': 'application/json, text/plain, */*',
+    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+    'api-version': '23',
+    'origin': 'https://web.classplusapp.com',
+    'referer': 'https://web.classplusapp.com/',
+    'region': 'IN',
+    'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+    'x-access-token': token,
+    }
+
+    params = {
+        'url': url,
+    }
+    req_url = f"https://api.classplusapp.com/cams/uploader/video/jw-signed-url"
+    res = r.get(req_url, params=params, headers=headers).json()['url']
+    vod_url = f"https://vod.saumay.dev/player/#{res}"
+    return vod_url
 
 def live_class(batchid, token):
     headers = {
@@ -150,7 +176,14 @@ def videos():
     bid = str(request.args.get('batchid'))
     token = str(request.args.get('token'))
     total_videos, videos = live_class(bid, token)
-    return render_template('videos.html', total_videos=total_videos, videos=videos[::-1])
+    return render_template('videos.html', total_videos=total_videos, videos=videos[::-1], token=token)
+
+@app.route('/vod')
+def vod():
+    token = str(request.args.get('token'))
+    url = str(request.args.get('url'))
+    vod_url = sign(url, token)
+    return redirect(vod_url)
 
 @app.route('/batches')
 def batches():

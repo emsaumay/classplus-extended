@@ -20,7 +20,11 @@
                 <div class="card-body">
                 <h5 class="card-title"> {{ v['name'] }}</h5>
                 </div>
+                {% if v['videoType'] == 'jw-hosted' %}
+                <a href="https://zeal.saumay.dev/vod?url={{v['url']}}&token={{token}}" target="_blank" class="btn btn-primary">Watch</a>
+                {% else %}
                 <a href="https://vod.saumay.dev/player/#{{v['url']}}" target="_blank" class="btn btn-primary">Watch</a>
+                {% endif %}
                 <div class="card-footer">
                 <small class="text-muted">Duration: {{ v['duration'] }} </small>
                 </div>
