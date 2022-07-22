@@ -2,6 +2,7 @@ from email import header
 from flask import Flask, redirect, render_template, request
 import requests as r
 import random
+import time
 
 
 app = Flask(
@@ -64,7 +65,13 @@ def live_class(batchid, token):
     res = r.get('https://api.classplusapp.com/v2/live/classes/list/videos', params=params, headers=headers).json()['data']
     total_videos = str(res['totalCount'])
     videos = res['list']
-    return total_videos, videos
+    sec = 0
+    for v in videos:
+        duration = v['duration']
+        l = duration.split(':')
+        sec += int(l[0]) * 3600 + int(l[1]) * 60 + int(l[2])
+    tt = time.strftime('%H:%M:%S', time.gmtime(sec))
+    return total_videos, videos, tt
 
 def get_batches(token):
 
@@ -175,8 +182,8 @@ def hello_world():
 def videos():
     bid = str(request.args.get('batchid'))
     token = str(request.args.get('token'))
-    total_videos, videos = live_class(bid, token)
-    return render_template('videos.html', total_videos=total_videos, videos=videos[::-1], token=token)
+    total_videos, videos, tt = live_class(bid, token)
+    return render_template('videos.html', total_videos=total_videos, videos=videos[::-1], token=token, tt=tt)
 
 @app.route('/vod')
 def vod():
@@ -205,5 +212,5 @@ def folder():
     return render_template('material.html', folders=folders, atts=atts, token=token)
 
 if __name__ == "__main__":
-    #app.debug = True
+    # app.debug = True
     app.run(host="0.0.0.0",port= 5000)
