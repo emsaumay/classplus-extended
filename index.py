@@ -4,7 +4,6 @@ import requests as r
 import random
 import time
 
-
 app = Flask(
     __name__,
     template_folder='templates',
@@ -105,7 +104,7 @@ def get_batches(token):
 
     return total_batches, names
 
-def get_maerial(token):
+def get_material(token):
 
     headers = {
         'authority': 'api.classplusapp.com',
@@ -174,6 +173,72 @@ def get_folder(id, token):
     atts = res['attachments']
     return folders, atts
 
+def get_report(token):
+
+    headers = {
+        'authority': 'api.classplusapp.com',
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        'api-version': '23',
+        'origin': 'https://web.classplusapp.com',
+        'referer': 'https://web.classplusapp.com/',
+        'region': 'IN',
+        'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        'x-access-token': token,
+    }
+
+    res = r.get('https://api.classplusapp.com/students/dashboard/batches/ts2jdlqm', headers=headers).json()['data']
+
+    return res
+
+def get_test(id, token):
+    
+    web_headers = {
+        'authority': 'api.classplusapp.com',
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        'api-version': '23',
+        'origin': 'https://web.classplusapp.com',
+        'referer': 'https://web.classplusapp.com/',
+        'region': 'IN',
+        'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        'x-access-token': token,
+    }
+    web = r.get(f'https://api.classplusapp.com/v2/students/batches/ts2jdlqm/tests/{id}/stats', headers=web_headers).json()['data']
+    solurl = web['solutionUrl']
+    cmstoken = (solurl.split('token='))[1].split('&testId=')[0]
+    studentTestId = (solurl.split('studentTestId='))[1].split('&defaultLanguage=en')[0]
+
+    cms_headers = {
+    'authority': 'cms-gcp.classplusapp.com',
+    'accept': 'application/json, text/plain, */*',
+    'accept-language': 'en',
+    'origin': 'https://student-cms.classplusapp.com',
+    'referer': 'https://student-cms.classplusapp.com/',
+    'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+    'x-cms-access-token': cmstoken,
+}
+    cms = r.get(f'https://cms-gcp.classplusapp.com/student/api/v2/test/evaluate/{studentTestId}', headers=cms_headers).json()['data']
+    return cms
+
 @app.route("/")
 def hello_world():
     return "<p>sup!🫦 🫦</p>"
@@ -201,7 +266,7 @@ def batches():
 @app.route('/material')
 def material():
     token = str(request.args.get('token'))
-    folders, atts = get_maerial(token)
+    folders, atts = get_material(token)
     return render_template('material.html', folders=folders, atts=atts, token=token)
 
 @app.route('/folder')
@@ -210,6 +275,19 @@ def folder():
     token = str(request.args.get('token'))
     folders, atts = get_folder(id, token)
     return render_template('material.html', folders=folders, atts=atts, token=token)
+
+@app.route('/report')
+def report():
+    token = str(request.args.get('token'))
+    res = get_report(token)
+    return render_template('reports.html', res=res, token=token)
+
+@app.route('/test')
+def test():
+    id = str(request.args.get('testid'))
+    token = str(request.args.get('token'))
+    cms = get_test(id, token)
+    return render_template('test.html', cms=cms, token=token)
 
 if __name__ == "__main__":
     # app.debug = True
