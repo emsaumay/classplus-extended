@@ -1,8 +1,10 @@
 from email import header
 from flask import Flask, redirect, render_template, request
 import requests as r
-import random
-import time
+from dotenv import load_dotenv
+import time, os
+
+load_dotenv()
 
 app = Flask(
     __name__,
@@ -11,12 +13,12 @@ app = Flask(
 
 def sign(url, token):
     headers = {
-    'authority': 'api.classplusapp.com',
+    'authority': os.environ.get('AUTHORITY'),
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
     'api-version': '23',
-    'origin': 'https://web.classplusapp.com',
-    'referer': 'https://web.classplusapp.com/',
+    'origin': os.environ.get("WEB"),
+    'referer': os.environ.get("WEB"),
     'region': 'IN',
     'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
     'sec-ch-ua-mobile': '?0',
@@ -31,19 +33,19 @@ def sign(url, token):
     params = {
         'url': url,
     }
-    req_url = f"https://api.classplusapp.com/cams/uploader/video/jw-signed-url"
+    req_url = os.environ.get('JW_SIGNED_URL')
     res = r.get(req_url, params=params, headers=headers).json()['url']
     vod_url = f"https://vod.saumay.dev/player/#{res}"
     return vod_url
 
 def live_class(batchid, token):
     headers = {
-    'authority': 'api.classplusapp.com',
+    'authority': os.environ.get('AUTHORITY'),
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
     'api-version': '23',
-    'origin': 'https://web.classplusapp.com',
-    'referer': 'https://web.classplusapp.com/',
+    'origin': os.environ.get("WEB"),
+    'referer': os.environ.get("WEB"),
     'region': 'IN',
     'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
     'sec-ch-ua-mobile': '?0',
@@ -61,7 +63,7 @@ def live_class(batchid, token):
         'limit': '50',
         'offset': '0',
     }
-    res = r.get('https://api.classplusapp.com/v2/live/classes/list/videos', params=params, headers=headers).json()['data']
+    res = r.get(os.environ.get('LIVE_VIDEOS'), params=params, headers=headers).json()['data']
     total_videos = str(res['totalCount'])
     videos = res['list']
     sec = 0
@@ -75,12 +77,12 @@ def live_class(batchid, token):
 def get_batches(token):
 
     headers = {
-        'authority': 'api.classplusapp.com',
+        'authority': os.environ.get("AUTHORITY"),
         'accept': 'application/json, text/plain, */*',
         'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         'api-version': '23',
-        'origin': 'https://web.classplusapp.com',
-        'referer': 'https://web.classplusapp.com/',
+        'origin': os.environ.get("WEB"),
+        'referer': os.environ.get("WEB"),
         'region': 'IN',
         'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
         'sec-ch-ua-mobile': '?0',
@@ -98,7 +100,7 @@ def get_batches(token):
         'sortBy': 'createdAt',
     }
 
-    res = r.get('https://api.classplusapp.com/v2/batches/details', params=params, headers=headers).json()['data']
+    res = r.get(os.environ.get("BATCHES"), params=params, headers=headers).json()['data']
     total_batches = str(res['batchesCount'])
     names = res['totalBatches']
 
@@ -107,13 +109,13 @@ def get_batches(token):
 def get_material(token):
 
     headers = {
-        'authority': 'api.classplusapp.com',
+        'authority': os.environ.get("AUTHORITY"),
         'accept': 'application/json, text/plain, */*',
         'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         'api-version': '23',
         'content-type': 'application/json;charset=UTF-8',
-        'origin': 'https://web.classplusapp.com',
-        'referer': 'https://web.classplusapp.com/',
+        'origin': os.environ.get("WEB"),
+        'referer': os.environ.get("WEB"),
         'region': 'IN',
         'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
         'sec-ch-ua-mobile': '?0',
@@ -133,7 +135,7 @@ def get_material(token):
         'sortBy': 'createdAt',
     }
 
-    res = r.post('https://api.classplusapp.com/v2/folder', headers=headers, json=json_data).json()['data']
+    res = r.post(os.environ.get('FOLDER'), headers=headers, json=json_data).json()['data']
     folders = res['folders']
     atts = res['attachments']
     return folders, atts
@@ -141,13 +143,13 @@ def get_material(token):
 def get_folder(id, token):
 
     headers = {
-        'authority': 'api.classplusapp.com',
+        'authority': os.environ.get("AUTHORITY"),
         'accept': 'application/json, text/plain, */*',
         'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         'api-version': '23',
         'content-type': 'application/json;charset=UTF-8',
-        'origin': 'https://web.classplusapp.com',
-        'referer': 'https://web.classplusapp.com/',
+        'origin': os.environ.get("WEB"),
+        'referer': os.environ.get("WEB"),
         'region': 'IN',
         'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
         'sec-ch-ua-mobile': '?0',
@@ -168,7 +170,7 @@ def get_folder(id, token):
         'folderId': id,
     }
 
-    res = r.post(f'https://api.classplusapp.com/v2/folder/{id}', headers=headers, json=json_data).json()['data']
+    res = r.post(f"{os.environ.get('FOLDER')}/{id}", headers=headers, json=json_data).json()['data']
     folders = res['folders']
     atts = res['attachments']
     return folders, atts
@@ -176,12 +178,12 @@ def get_folder(id, token):
 def get_report(token):
 
     headers = {
-        'authority': 'api.classplusapp.com',
+        'authority': os.environ.get("AUTHORITY"),
         'accept': 'application/json, text/plain, */*',
         'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         'api-version': '23',
-        'origin': 'https://web.classplusapp.com',
-        'referer': 'https://web.classplusapp.com/',
+        'origin': os.environ.get("WEB"),
+        'referer': os.environ.get("WEB"),
         'region': 'IN',
         'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
         'sec-ch-ua-mobile': '?0',
@@ -193,19 +195,19 @@ def get_report(token):
         'x-access-token': token,
     }
 
-    res = r.get('https://api.classplusapp.com/students/dashboard/batches/ts2jdlqm', headers=headers).json()['data']
+    res = r.get(os.environ.get('REPORT'), headers=headers).json()['data']
 
     return res
 
 def get_test(id, token):
     
     web_headers = {
-        'authority': 'api.classplusapp.com',
+        'authority': os.environ.get("AUTHORITY"),
         'accept': 'application/json, text/plain, */*',
         'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         'api-version': '23',
-        'origin': 'https://web.classplusapp.com',
-        'referer': 'https://web.classplusapp.com/',
+        'origin': os.environ.get("WEB"),
+        'referer': os.environ.get("WEB"),
         'region': 'IN',
         'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
         'sec-ch-ua-mobile': '?0',
@@ -216,17 +218,17 @@ def get_test(id, token):
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
         'x-access-token': token,
     }
-    web = r.get(f'https://api.classplusapp.com/v2/students/batches/ts2jdlqm/tests/{id}/stats', headers=web_headers).json()['data']
+    web = r.get(f'{os.environ.get("TEST")}/{id}/stats', headers=web_headers).json()['data']
     solurl = web['solutionUrl']
     cmstoken = (solurl.split('token='))[1].split('&testId=')[0]
     studentTestId = (solurl.split('studentTestId='))[1].split('&defaultLanguage=en')[0]
 
     cms_headers = {
-    'authority': 'cms-gcp.classplusapp.com',
+    'authority': os.environ.get("AUTHORITY_CMS"),
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'en',
-    'origin': 'https://student-cms.classplusapp.com',
-    'referer': 'https://student-cms.classplusapp.com/',
+    'origin': os.environ.get("STUDENT_CMS"),
+    'referer': os.environ.get("STUDENT_CMS"),
     'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"macOS"',
@@ -236,7 +238,7 @@ def get_test(id, token):
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
     'x-cms-access-token': cmstoken,
 }
-    cms = r.get(f'https://cms-gcp.classplusapp.com/student/api/v2/test/evaluate/{studentTestId}', headers=cms_headers).json()['data']
+    cms = r.get(f'{os.environ.get("TEST_EVALUATE")}{studentTestId}', headers=cms_headers).json()['data']
     return cms
 
 @app.route("/")
