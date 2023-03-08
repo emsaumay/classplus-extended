@@ -13,7 +13,12 @@
         <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action list-group-item-warning disabled">Folders</a>
             {% for f in folders %}
-            <a href="https://zeal.saumay.dev/folder?folderid={{ f['id'] }}&token={{ token }}" class="list-group-item list-group-item-action list-group-item-success">{{ f['name'] }}</a>
+            <a href="https://zeal.saumay.dev/folder?folderid={{ f['id'] }}&token={{ token }}" class="list-group-item list-group-item-action list-group-item-success">
+              <div class="d-flex w-100 justify-content-between">
+                <p class="mb-1">{{ f['name'] }}</p>
+                <small>{{f['modifiedAt'][0:10]}}</small>
+              </div>
+            </a>
             {% endfor %}
         </div>
 
@@ -24,7 +29,12 @@
         <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action list-group-item-warning disabled">Files</a>
             {% for a in atts %}
-            <a href="{{ a['url'] }}" target="_blank" class="list-group-item list-group-item-action list-group-item-primary">{{ a['fileName'] }}</a>
+            <a href="{{ a['url'] }}" target="_blank" class="list-group-item list-group-item-action list-group-item-primary"> 
+              <div class="d-flex w-100 justify-content-between">
+                <p class="mb-1">{{ a['fileName'] }}</p>
+                <small>{{a['updatedAt'][0:10]}}</small>
+              </div>
+            </a>
             {% endfor %}
         </div>
 
