@@ -195,9 +195,11 @@ def get_report(token):
         'x-access-token': token,
     }
 
-    res = r.get(os.environ.get('REPORT'), headers=headers).json()['data']
+    y2022 = r.get(f"{os.environ.get('REPORT')}ts2sw6st", headers=headers).json()['data']
+    y2023 = r.get(f"{os.environ.get('REPORT')}ts2jdlqm", headers=headers).json()['data']
+    y2024 = r.get(f"{os.environ.get('REPORT')}ts23qlno", headers=headers).json()['data']
 
-    return res
+    return y2022, y2023, y2024
 
 def get_test(id, token):
     
@@ -281,8 +283,9 @@ def folder():
 @app.route('/report')
 def report():
     token = str(request.args.get('token'))
-    res = get_report(token)
-    return render_template('reports.html', res=res, token=token)
+    y2022, y2023, y2024 = get_report(token)
+    # y2022 = get_report(token)
+    return render_template('reports.html', token=token, y2022=y2022, y2023=y2023, y2024=y2024)
 
 @app.route('/test')
 def test():
