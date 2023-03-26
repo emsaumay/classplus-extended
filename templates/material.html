@@ -13,7 +13,7 @@
         <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action list-group-item-warning disabled">Folders</a>
             {% for f in folders %}
-            <a href="https://zeal.saumay.dev/folder?folderid={{ f['id'] }}&token={{ token }}" class="list-group-item list-group-item-action list-group-item-success">
+            <a href="/folder?folderid={{ f['id'] }}&token={{ token }}" class="list-group-item list-group-item-action list-group-item-success">
               <div class="d-flex w-100 justify-content-between">
                 <p class="mb-1">{{ f['name'] }}</p>
                 <small>{{f['modifiedAt'][0:10]}}</small>

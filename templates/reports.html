@@ -16,7 +16,7 @@
           <div class="list-group">
               {% for r in y2024 %}
                   {% if r['scoredMarks'] != None %}
-              <a href="https://zeal.saumay.dev/test?testid={{r['batchTestId']}}&token={{token}}" class="list-group-item list-group-item-action list-group-item-info">
+              <a href="/test?testid={{r['batchTestId']}}&token={{token}}" class="list-group-item list-group-item-action list-group-item-info">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{r['testName']}}</h5>
                   <small>{{r['endTime'][0:10]}}</small>
@@ -33,7 +33,7 @@
           <div class="list-group">
             {% for r in y2023 %}
                 {% if r['scoredMarks'] != None %}
-            <a href="https://zeal.saumay.dev/test?testid={{r['batchTestId']}}&token={{token}}" class="list-group-item list-group-item-action list-group-item-info">
+            <a href="/test?testid={{r['batchTestId']}}&token={{token}}" class="list-group-item list-group-item-action list-group-item-info">
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{r['testName']}}</h5>
                 <small>{{r['endTime'][0:10]}}</small>

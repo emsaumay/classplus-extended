@@ -224,6 +224,7 @@ def get_test(id, token):
     solurl = web['solutionUrl']
     cmstoken = (solurl.split('token='))[1].split('&testId=')[0]
     studentTestId = (solurl.split('studentTestId='))[1].split('&defaultLanguage=en')[0]
+    testId = (solurl.split('testId='))[1].split('&studentTestId=')[0]
 
     cms_headers = {
     'authority': os.environ.get("AUTHORITY_CMS"),
@@ -241,7 +242,7 @@ def get_test(id, token):
     'x-cms-access-token': cmstoken,
 }
     cms = r.get(f'{os.environ.get("TEST_EVALUATE")}{studentTestId}', headers=cms_headers).json()['data']
-    return cms
+    return cms, cmstoken, studentTestId, testId
 
 @app.route("/")
 def hello_world():
@@ -291,8 +292,87 @@ def report():
 def test():
     id = str(request.args.get('testid'))
     token = str(request.args.get('token'))
-    cms = get_test(id, token)
-    return render_template('test.html', cms=cms, token=token)
+    cms, cmstoken, studentTestId, testId = get_test(id, token)
+    return render_template('test.html', cms=cms, token=token, cmstoken=cmstoken, studentTestId=studentTestId, testId=testId)
+
+@app.route('/solution')
+def solution():
+    testId = str(request.args.get('testid'))
+    studentTestId = str(request.args.get('studenttestid'))
+    cmstoken = str(request.args.get('cmstoken'))
+    print(testId, studentTestId, cmstoken)
+    cms_headers = {
+    'authority': os.environ.get("AUTHORITY_CMS"),
+    'accept': 'application/json, text/plain, */*',
+    'accept-language': 'en',
+    'origin': os.environ.get("STUDENT_CMS"),
+    'referer': os.environ.get("STUDENT_CMS"),
+    'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+    'x-cms-access-token': cmstoken,
+    }
+
+    sol = r.get(f'{os.environ.get("SOLUTION_URL")}/{testId}/student/{studentTestId}/solutions?section=true', headers=cms_headers).json()['data']
+
+    html = """<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>\n"""
+    html+= """<button type="button" onclick="questionspdf()" class="btn-sm btn-danger pull-right">Download Questions</button>
+            <button type="button" onclick="answerspdf()" class="btn-sm btn-danger pull-right">Download Answers</button>
+            <button type="button" onclick="qapdf()" class="btn-sm btn-danger pull-right">Download Questions&Answers</button>\n"""
+    html += "<h2>Questions:</h2>\n<div id='paper'><div id='questions'>\n"
+    for qa in sol['sections'][0]['questions']:
+        html += f"""<span style="font-size: 15pt;"> <strong>Question - {qa['questionSubmitOrder']}</strong>""" + qa['name'] + "<hr>\n"
+    html += "</div> <div id='answers'>\n<h2>Answers:</h2>\n"
+    for qa in sol['sections'][0]['questions']:
+        html += f"""<span style="font-size: 15pt;"> <strong>Solution - {qa['questionSubmitOrder']}</strong>""" + qa['solution'] + "<hr>\n"
+    html += "</div></div><br>\n"
+    html+="""
+    <script type="text/javascript">
+  function questionspdf() {
+        var element = document.getElementById('questions');
+        var opt = {
+            margin:       0.25,
+            filename:     'questions.pdf',
+            image:        { type: 'jpeg', quality: 1 },
+            html2canvas:  { scale: 1, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+        html2pdf().set(opt).from(element).save();
+      }
+</script>
+<script type="text/javascript">
+  function answerspdf() {
+        var element = document.getElementById('answers');
+        var opt = {
+            margin:       0.25,
+            filename:     'answers.pdf',
+            image:        { type: 'jpeg', quality: 1 },
+            html2canvas:  { scale: 1, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+        
+        html2pdf().set(opt).from(element).save();
+      }
+</script>
+<script type="text/javascript">
+  function qapdf() {
+        var element = document.getElementById('paper');
+        var opt = {
+            margin:       0.25,
+            filename:     'qa.pdf',
+            image:        { type: 'jpeg', quality: 1 },
+            html2canvas:  { scale: 1, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+        html2pdf().set(opt).from(element).save();
+      }
+</script>"""
+    return html
 
 if __name__ == "__main__":
     # app.debug = True
