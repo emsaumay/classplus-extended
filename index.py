@@ -3,6 +3,8 @@ from flask import Flask, redirect, render_template, request
 import requests as r
 from dotenv import load_dotenv
 import time, os
+from flask_cors import CORS
+
 
 load_dotenv()
 
@@ -10,6 +12,7 @@ app = Flask(
     __name__,
     template_folder='templates',
     )
+CORS(app, resources={r"*": {"origins": "*"}})
 
 def sign(url, token):
     headers = {
