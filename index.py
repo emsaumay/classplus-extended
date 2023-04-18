@@ -245,7 +245,7 @@ def get_test(id, token):
     'x-cms-access-token': cmstoken,
 }
     cms = r.get(f'{os.environ.get("TEST_EVALUATE")}{studentTestId}', headers=cms_headers).json()['data']
-    return cms, cmstoken, studentTestId, testId
+    return cms, cmstoken, studentTestId, testId, solurl
 
 @app.route("/")
 def hello_world():
@@ -295,8 +295,8 @@ def report():
 def test():
     id = str(request.args.get('testid'))
     token = str(request.args.get('token'))
-    cms, cmstoken, studentTestId, testId = get_test(id, token)
-    return render_template('test.html', cms=cms, token=token, cmstoken=cmstoken, studentTestId=studentTestId, testId=testId)
+    cms, cmstoken, studentTestId, testId, solurl = get_test(id, token)
+    return render_template('test.html', solurl=solurl, cms=cms, token=token, cmstoken=cmstoken, studentTestId=studentTestId, testId=testId)
 
 @app.route('/solution')
 def solution():
