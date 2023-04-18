@@ -305,19 +305,19 @@ def solution():
     cmstoken = str(request.args.get('cmstoken'))
     print(testId, studentTestId, cmstoken)
     cms_headers = {
-    'authority': os.environ.get("AUTHORITY_CMS"),
-    'accept': 'application/json, text/plain, */*',
-    'accept-language': 'en',
-    'origin': os.environ.get("STUDENT_CMS"),
-    'referer': os.environ.get("STUDENT_CMS"),
-    'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"macOS"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-site',
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
-    'x-cms-access-token': cmstoken,
+        'authority': os.environ.get("AUTHORITY_CMS"),
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en',
+        'origin': os.environ.get("STUDENT_CMS"),
+        'referer': os.environ.get("STUDENT_CMS"),
+        'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+        'x-cms-access-token': cmstoken,
     }
 
     sol = r.get(f'{os.environ.get("SOLUTION_URL")}/{testId}/student/{studentTestId}/solutions?section=true', headers=cms_headers).json()['data']

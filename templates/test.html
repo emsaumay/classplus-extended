@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Test</title>
+    <title>{{ cms['sectionWiseStats'][0]['name'] }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   </head>
   <body>
@@ -11,7 +11,65 @@
     <div class="container">
         <p class="h1 text-center">{{cms['testName']}}</p>
     </div>
+    <br>
 
+    <div class="container">
+      {% if cms['rankGenerated'] %}
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-header">
+              {{cms['sectionWiseStats'][0]['name'] }}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Your / Average</h5>
+              <p class="card-text">Marks: {{cms['sectionWiseStats'][0]['marksScored'] }} / {{cms['analytics']['testStats']['average']['averageMarks'] }}</p>
+              <p class="card-text">Accuracy: {{cms['sectionWiseStats'][0]['accuracy'] }} / {{cms['analytics']['testStats']['average']['averageAccuracy'] }}</p>
+              <p class="card-text">Correct: {{cms['sectionWiseStats'][0]['correctAnswers'] }} / {{cms['analytics']['testStats']['average']['averageCorrect'] }}</p>
+              <p class="card-text">InCorrect: {{cms['sectionWiseStats'][0]['inCorrectAnswers'] }} / {{cms['analytics']['testStats']['average']['averageInCorrect'] }}</p>
+              <a href="/solution?testid={{testId}}&studenttestid={{studentTestId}}&cmstoken={{cmstoken}}" target="_parent" class="btn btn-info">View Test & Solutions</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-header">
+              {{cms['sectionWiseStats'][0]['name'] }}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Topper - {{cms['analytics']['testStats']['topper']['metadata']['name']}}</h5>
+              <p class="card-text">Marks: {{cms['analytics']['testStats']['topper']['sections'][0]['marksScored']}}</p>
+              <p class="card-text">Accuracy: {{cms['analytics']['testStats']['topper']['sections'][0]['accuracy']}}</p>
+              <p class="card-text">Correct: {{cms['analytics']['testStats']['topper']['sections'][0]['correctAnswers']}}</p>
+              <p class="card-text">InCorrect: {{cms['analytics']['testStats']['topper']['sections'][0]['inCorrectAnswers']}}</p>
+          <a href="https://student-cms.classplusapp.com/solution?token={{cmstoken}}&testId={{testId}}&studentTestId={{cms['analytics']['testStats']['topper']['_id']}}&defaultLanguage=en&isGenericShare=false" target="_blank" class="btn btn-info">View Topper's Test</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {% else %}
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            {{cms['sectionWiseStats'][0]['name'] }}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Your Stats:</h5>
+            <p class="card-text">Marks: {{cms['sectionWiseStats'][0]['marksScored'] }}</p>
+            <p class="card-text">Accuracy: {{cms['sectionWiseStats'][0]['accuracy'] }}</p>
+            <p class="card-text">Correct: {{cms['sectionWiseStats'][0]['correctAnswers'] }}</p>
+            <p class="card-text">InCorrect: {{cms['sectionWiseStats'][0]['inCorrectAnswers'] }}</p>
+            <a href="/solution?testid={{testId}}&studenttestid={{studentTestId}}&cmstoken={{cmstoken}}" target="_blank" class="btn btn-info">View Test & Solutions</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <br>
+
+    {% if cms['rankGenerated'] %}
     <div class="container">
 
         <table class="table table-dark table-striped table-hover">
@@ -35,10 +93,15 @@
             </tbody>
           </table>
     </div>
+    {% else %}
     <div class="container">
-      <a href="/solution?testid={{testId}}&studenttestid={{studentTestId}}&cmstoken={{cmstoken}}" target="_blank">View Test</a>
-
+      <div class="alert alert-danger text-center" role="alert">
+        Result Not Declared Yet!
+      </div>
     </div>
+    {% endif %}
+
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
   </body>
 </html>
