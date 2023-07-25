@@ -1,34 +1,38 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Videos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-  </head>
-  <body>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body>
     <div class="container">
-      <br>
+        <br>
         <div class="row row-cols-1 row-cols-md-5 g-4">
             {% for v in videos %}
             <div class="col">
-            <div class="card h-100">
-                <div class="card-header">
-                    {{ v['createdAt'] }}
+                <div class="card h-100">
+                    <div class="card-header">
+                        {{ v['createdAt'] }}
+                    </div>
+                    <img src="{{ v['thumbnailUrl'] }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title"> {{ v['name'] }}</h5>
+                    </div>
+                    {% if v['videoType'] == 'jw-hosted' %}
+                    <a href="/vod?videoId={{v['id']}}&liveSessionId={{v['liveSessionId']}}&token={{token}}" target="_blank" class="btn btn-primary">Watch</a>
+                    {% else %}
+                    <a href="https://vod.saumay.dev/player/#{{v['url']}}" target="_blank"
+                        class="btn btn-primary">Watch</a>
+                    {% endif %}
+                    <div class="card-footer">
+                        <small class="text-muted">Duration: {{ v['duration'] }} </small>
+                    </div>
                 </div>
-                <img src="{{ v['thumbnailUrl'] }}" class="card-img-top" alt="...">
-                <div class="card-body">
-                <h5 class="card-title"> {{ v['name'] }}</h5>
-                </div>
-                {% if v['videoType'] == 'jw-hosted' %}
-                <a href="/vod?url={{v['url']}}&token={{token}}" target="_blank" class="btn btn-primary">Watch</a>
-                {% else %}
-                <a href="https://vod.saumay.dev/player/#{{v['url']}}" target="_blank" class="btn btn-primary">Watch</a>
-                {% endif %}
-                <div class="card-footer">
-                <small class="text-muted">Duration: {{ v['duration'] }} </small>
-                </div>
-            </div>
             </div>
             {% endfor %}
         </div>
@@ -36,12 +40,15 @@
 
     <br>
     <footer class="bg-light text-center">
-    
-      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        {{total_videos}} Videos, Total Duration: {{ tt }}
-      </div>
+
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            {{total_videos}} Videos, Total Duration: {{ tt }}
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-  </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>

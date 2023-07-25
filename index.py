@@ -14,30 +14,27 @@ app = Flask(
     )
 CORS(app, resources={r"*": {"origins": "*"}})
 
-def sign(url, token):
+def sign(videoId, liveSessionId, token):
     headers = {
-    'authority': os.environ.get('AUTHORITY'),
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
     'api-version': '23',
-    'origin': os.environ.get("WEB"),
-    'referer': os.environ.get("WEB"),
     'region': 'IN',
-    'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"macOS"',
     'sec-fetch-dest': 'empty',
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-site',
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
     'x-access-token': token,
     }
 
     params = {
-        'url': url,
+        'videoId': videoId,
+        'liveSessionId': liveSessionId
     }
     req_url = os.environ.get('JW_SIGNED_URL')
     res = r.get(req_url, params=params, headers=headers).json()['url']
+    print(res)
     vod_url = f"https://vod.saumay.dev/player/#{res}"
     return vod_url
 
@@ -205,7 +202,6 @@ def get_report(token):
     return y2022, y2023, y2024
 
 def get_test(id, token):
-    
     web_headers = {
         'authority': os.environ.get("AUTHORITY"),
         'accept': 'application/json, text/plain, */*',
@@ -261,8 +257,9 @@ def videos():
 @app.route('/vod')
 def vod():
     token = str(request.args.get('token'))
-    url = str(request.args.get('url'))
-    vod_url = sign(url, token)
+    videoId = str(request.args.get('videoId'))
+    liveSessionId = str(request.args.get('liveSessionId'))
+    vod_url = sign(videoId, liveSessionId, token)
     return redirect(vod_url)
 
 @app.route('/batches')
@@ -322,7 +319,7 @@ def solution():
 
     sol = r.get(f'{os.environ.get("SOLUTION_URL")}/{testId}/student/{studentTestId}/solutions?section=true', headers=cms_headers).json()['data']
 
-    html = """<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script> 
+    html = """<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>\n"""
     html+= """<button type="button" onclick="questionspdf()" class="btn-sm btn-danger pull-right">Download Questions</button>
             <button type="button" onclick="answerspdf()" class="btn-sm btn-danger pull-right">Download Answers</button>
@@ -358,7 +355,7 @@ def solution():
             html2canvas:  { scale: 1, useCORS: true },
             jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
           };
-        
+
         html2pdf().set(opt).from(element).save();
       }
 </script>
@@ -379,4 +376,4 @@ def solution():
 
 if __name__ == "__main__":
     # app.debug = True
-    app.run(host="0.0.0.0",port= 5000)
+    app.run(host="0.0.0.0",port= 5001)
