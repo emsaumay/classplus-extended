@@ -14,7 +14,7 @@ app = Flask(
     )
 CORS(app, resources={r"*": {"origins": "*"}})
 
-def sign(liveSessionId, token):
+def sign(liveSessionId, isAgora, token):
     headers = {
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
@@ -29,7 +29,8 @@ def sign(liveSessionId, token):
     }
 
     params = {
-        'liveSessionId': liveSessionId
+        'liveSessionId': liveSessionId,
+        'isAgora': isAgora
     }
     req_url = os.environ.get('JW_SIGNED_URL')
     res = r.get(req_url, params=params, headers=headers).json()['url']
@@ -257,7 +258,8 @@ def videos():
 def vod():
     token = str(request.args.get('token'))
     liveSessionId = str(request.args.get('liveSessionId'))
-    vod_url = sign(liveSessionId, token)
+    isAgora = str(request.args.get('isAgora'))  
+    vod_url = sign(liveSessionId, isAgora, token)
     return redirect(vod_url)
 
 @app.route('/batches')

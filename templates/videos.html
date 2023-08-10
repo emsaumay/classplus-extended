@@ -24,7 +24,7 @@
                         <h5 class="card-title"> {{ v['name'] }}</h5>
                     </div>
                     {% if v['videoType'] == 'jw-hosted' %}
-                    <a href="/vod?liveSessionId={{v['contentHashId']}}&token={{token}}" target="_blank" class="btn btn-primary">Watch</a>
+                    <a href="/vod?liveSessionId={{v['contentHashId']}}&isAgora={{v['isAgora']}}&token={{token}}" target="_blank" class="btn btn-primary">Watch</a>
                     {% else %}
                     <a href="https://vod.saumay.dev/player/#{{v['url']}}" target="_blank"
                         class="btn btn-primary">Watch</a>
