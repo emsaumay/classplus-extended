@@ -87,9 +87,9 @@
                 {% for r in cms['analytics']['batchWise']['leaderBoard'] %}
               <tr>
                 <th scope="row">{{r['rank']}}</th>
-                <td>{{r['name']}}</td>
+                <td>{{r['name']}}</a></td>
                 <td>{{r['marksScored']}}</td>
-                <td>{{r['accuracy']}}</td>
+                <td><a href="https://student-cms.classplusapp.com/reportSummary?token={{cmstoken}}&testId={{testId}}&studentTestId={{r['studentTestId']}}&defaultLanguage=en&isGenericShare=false" target="_blank">{{r['accuracy']}}</a></td>
               </tr>
                 {%endfor%}
             </tbody>
