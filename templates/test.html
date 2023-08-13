@@ -27,7 +27,8 @@
               <p class="card-text">Accuracy: {{cms['sectionWiseStats'][0]['accuracy'] }} / {{cms['analytics']['testStats']['average']['averageAccuracy'] }}</p>
               <p class="card-text">Correct: {{cms['sectionWiseStats'][0]['correctAnswers'] }} / {{cms['analytics']['testStats']['average']['averageCorrect'] }}</p>
               <p class="card-text">InCorrect: {{cms['sectionWiseStats'][0]['inCorrectAnswers'] }} / {{cms['analytics']['testStats']['average']['averageInCorrect'] }}</p>
-              <a href="/solution?testid={{testId}}&studenttestid={{studentTestId}}&cmstoken={{cmstoken}}" target="_parent" class="btn btn-info">View Test & Solutions</a>
+              <a href="/solution?testid={{testId}}&studenttestid={{studentTestId}}&cmstoken={{cmstoken}}" target="_blank" class="btn btn-info">View Test & Solutions</a>
+              <a href="https://student-cms.classplusapp.com/solution?token={{cmstoken}}&testId={{testId}}&studentTestId={{studentTestId}}&defaultLanguage=en&isGenericShare=false" target="_blank" class="btn btn-info">View Your Test</a>
             </div>
           </div>
         </div>
