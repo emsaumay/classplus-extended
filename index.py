@@ -317,60 +317,7 @@ def solution():
 
     sol = r.get(f'{os.environ.get("SOLUTION_URL")}/{testId}/student/{studentTestId}/solutions?section=true', headers=cms_headers).json()['data']
 
-    html = """<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>\n"""
-    html+= """<button type="button" onclick="questionspdf()" class="btn-sm btn-danger pull-right">Download Questions</button>
-            <button type="button" onclick="answerspdf()" class="btn-sm btn-danger pull-right">Download Answers</button>
-            <button type="button" onclick="qapdf()" class="btn-sm btn-danger pull-right">Download Questions&Answers</button>\n"""
-    html += "<h2>Questions:</h2>\n<div id='paper'><div id='questions'>\n"
-    for qa in sol['sections'][0]['questions']:
-        html += f"""<span style="font-size: 15pt;"> <strong>Question - {qa['questionSubmitOrder']}</strong>""" + qa['name'] + "<hr>\n"
-    html += "</div> <div id='answers'>\n<h2>Answers:</h2>\n"
-    for qa in sol['sections'][0]['questions']:
-        html += f"""<span style="font-size: 15pt;"> <strong>Solution - {qa['questionSubmitOrder']}</strong>""" + qa['solution'] + "<hr>\n"
-    html += "</div></div><br>\n"
-    html+="""
-    <script type="text/javascript">
-  function questionspdf() {
-        var element = document.getElementById('questions');
-        var opt = {
-            margin:       0.25,
-            filename:     'questions.pdf',
-            image:        { type: 'jpeg', quality: 1 },
-            html2canvas:  { scale: 1, useCORS: true },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-          };
-        html2pdf().set(opt).from(element).save();
-      }
-</script>
-<script type="text/javascript">
-  function answerspdf() {
-        var element = document.getElementById('answers');
-        var opt = {
-            margin:       0.25,
-            filename:     'answers.pdf',
-            image:        { type: 'jpeg', quality: 1 },
-            html2canvas:  { scale: 1, useCORS: true },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-          };
-
-        html2pdf().set(opt).from(element).save();
-      }
-</script>
-<script type="text/javascript">
-  function qapdf() {
-        var element = document.getElementById('paper');
-        var opt = {
-            margin:       0.25,
-            filename:     'qa.pdf',
-            image:        { type: 'jpeg', quality: 1 },
-            html2canvas:  { scale: 1, useCORS: true },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-          };
-        html2pdf().set(opt).from(element).save();
-      }
-</script>"""
-    return html
+    return render_template('solution.html', sol=sol)
 
 if __name__ == "__main__":
     # app.debug = True
